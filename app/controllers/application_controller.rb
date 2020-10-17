@@ -7,7 +7,47 @@ class ApplicationController < Sinatra::Base
     set :public_folder, 'public'
     set :views, 'app/views'
   end
-
-  get '/' do
+  
+#read
+  get '/articles' do
+    @articles = Article.all
+    erb :index
   end
+  
+  get '/articles/new' do
+    erb :new
+  end 
+  
+  get '/articles/:id' do
+    @article = Article.find_by(id: params[:id])
+    erb :show
+  end 
+
+#create  
+  post '/articles' do
+    @article = Article.create(params)
+    redirect to "/articles/#{@article.id}"
+  end
+  
+#update
+  get '/articles/:id/edit' do
+    @article = Article.find_by(id: params[:id])
+    erb :edit
+  end
+  
+  patch '/articles/:id' do
+    @article = Article.find_by(id: params[:id])
+    @article.update(title: params[:title], content: params[:content])
+    redirect to "/articles/#{@article.id}"
+  end 
+  
+#delete 
+  delete '/articles/:id' do
+    @article = Article.find_by(id: params[:id])
+    @article.destroy
+    redirect to '/articles'
+  end
+  
 end
+
+
